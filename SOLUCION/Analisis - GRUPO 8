@@ -1,0 +1,50 @@
+PROYECTO BIMESTRAL - GRUPO 8
+
+ANALISIS
+	
+	-Sistema de gestión de entradas para la Feria internacional de Loja-
+
+
+	(31 de Agosto {Sabado} al 16 de Septiembre {Lunes})
+
+	ENTRADA
+	1. "Que dia desea ingresar?: "
+		diaIngre
+	2. Que horario desea ingresar?:" 
+		horarioIngre	
+	3. Fecha de Entrada
+		---11/01/2024---
+	b. Horario de Entrada/ Facturacion de boletos 
+		1. Horario Normal
+			1.1 Entrada Normal
+				1.1.1 Tarifa Normal
+					--1.75
+				1.1.2 Tarifa Media
+					--1.25
+				1.1.3 Taria Estudiante
+					--1.25
+		2. Horario Nocturno
+			1.1 Entrada Normal
+				1.1.1 Precio Normal 
+					-1.75
+			2.1 Entrada Funcion Especial (Sube el precio por funciones)
+				2.1 Artistas Nacionales
+					2.1.1 Tarifa Normal
+						--5,00
+				2.2. Artistas Internacionales
+					2.2.1 Tarifa Normal
+						--8,00
+
+	PROCESO
+		Si(horarioIngre < 18:00 )
+			"Horario Normal"
+				1. Precio Normal
+		Sino
+			"Horario Nocturno"
+				Si(diaIngre = diaDeFuncionEspecial)
+					-Aumenta el costo del boleto
+				Sino
+					-costo de boleto normal-
+
+	SALIDA
+	Usuario1 ingresa el 31 de Agosto Horario Nocturno con boleto de funcion especial su costo es de $8,00

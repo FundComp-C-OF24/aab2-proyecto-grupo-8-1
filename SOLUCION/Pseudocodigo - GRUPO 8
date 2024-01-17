@@ -1,0 +1,33 @@
+1. Algoritmo GestionBoletosFeriaInterLoja
+2. 	Inicio
+3. 	Metodo principal()
+3. 	Definicion
+		nombre, tarifaNorm, tarifaMedi, tarifaEst Como Cadena [A-Z, ,a-z]
+		edad Como Entero [1,n]
+4.  << "Cual es su nombre: "
+5.  >> nombre
+6.  << "Cual es su edad: "
+7.  >> edad
+8.  << "Su tarifa es: ", tipoDeTarifa(edad)
+9.	
+
+   FinMetodoPrincipal
+
+1. Funcion tipoDeTarifa(edad i(0,n)):x
+2.	Definir
+		tipoTari Como Cadena [A-Z, ,a-z]
+3.	Si (edad <10 )
+4.		tipoTari = "No paga"
+5.	Sino 
+6.		Si (edad <18)
+7.		tipoTari = "tarifaEst"
+8.		Sino 
+9.			Si (edad < 60)
+10.				tipoTari = "tarifaNorm"
+11.			Sino
+12.				tipoTari = "tarifaMedi"
+13.			FinSi
+14.		FinSi
+15.	FinSi
+16.	Devolver tipoTari	
+17.FinFuncion
