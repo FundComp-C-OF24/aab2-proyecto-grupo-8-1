@@ -1,50 +1,75 @@
-PROYECTO BIMESTRAL - GRUPO 8
+El sistema de gestión de entradas para la Feria Internacional de Loja es un programa diseñado para facilitar la compra de boletos para el evento. El análisis del sistema se puede dividir en tres partes principales: entrada, proceso y salida.
 
-ANALISIS
-	
-	-Sistema de gestión de entradas para la Feria internacional de Loja-
+Entrada:
 
+El usuario proporciona el día en que desea ingresar.
+Se solicita al usuario que elija el horario de ingreso.
+Se registra la fecha de entrada, que se establece como el 11 de enero de 2024.
+Proceso:
+El proceso implica la lógica de facturación de boletos, que varía según el horario y el tipo de entrada seleccionados:
 
-	(31 de Agosto {Sabado} al 16 de Septiembre {Lunes})
+Si el horario de ingreso es antes de las 18:00, se considera "Horario Normal". Se ofrecen varias opciones de tarifas, como Normal, Media y Estudiante.
+Si el horario de ingreso es a partir de las 18:00, se considera "Horario Nocturno". En este caso, el precio puede variar dependiendo del día y si hay funciones especiales:
+Para las funciones especiales, se pueden presentar artistas nacionales o internacionales, cada uno con su respectiva tarifa.
+Salida:
+La salida del sistema incluye la información detallada sobre los boletos comprados, el método de pago utilizado y cualquier promoción en la que el cliente pueda participar. Además, se ofrece la opción de generar estadísticas sobre las ventas y los ingresos obtenidos durante el evento.
 
-	ENTRADA
-	1. "Que dia desea ingresar?: "
-		diaIngre
-	2. Que horario desea ingresar?:" 
-		horarioIngre	
-	3. Fecha de Entrada
-		---11/01/2024---
-	b. Horario de Entrada/ Facturacion de boletos 
-		1. Horario Normal
-			1.1 Entrada Normal
-				1.1.1 Tarifa Normal
-					--1.75
-				1.1.2 Tarifa Media
-					--1.25
-				1.1.3 Taria Estudiante
-					--1.25
-		2. Horario Nocturno
-			1.1 Entrada Normal
-				1.1.1 Precio Normal 
-					-1.75
-			2.1 Entrada Funcion Especial (Sube el precio por funciones)
-				2.1 Artistas Nacionales
-					2.1.1 Tarifa Normal
-						--5,00
-				2.2. Artistas Internacionales
-					2.2.1 Tarifa Normal
-						--8,00
+ALGORITMO GestionBoletosFeriaInterLoja
 
-	PROCESO
-		Si(horarioIngre < 18:00 )
-			"Horario Normal"
-				1. Precio Normal
-		Sino
-			"Horario Nocturno"
-				Si(diaIngre = diaDeFuncionEspecial)
-					-Aumenta el costo del boleto
-				Sino
-					-costo de boleto normal-
+INICIO
 
-	SALIDA
-	Usuario1 ingresa el 31 de Agosto Horario Nocturno con boleto de funcion especial su costo es de $8,00
+    PROCEDIMIENTO Principal()
+
+        // Variables
+        nombreCliente, diaAsis, fechaAsis, mesAsis, respuesta, horario, opcionMetPago, contrasena, idTarjeta, participaSorteo COMO Cadena
+        filas, columnas, numCli, totalCantidad, numeroSorteo COMO Entero
+        tarifaNormal, tarifaPreferencial, totalNormal, totalPreferencial, totalAPagar, acumuladorTotales, acumEntrNormals, acumEntrPref COMO Real
+        archivoJava[filas][columnas], entradasPorDia[filas][2], matrizEstadistica[18][6] COMO Real
+
+        // Instrucciones
+        numCli <- 0
+        REPETIR
+            PREGUNTAR nombreCliente
+            PREGUNTAR diaAsis
+            PREGUNTAR fechaAsis
+            PREGUNTAR mesAsis
+            REPETIR
+                PREGUNTAR horario
+                tarifaNormal <- CalcularTarifaNormal(diaAsis, fechaAsis, mesAsis, horario)
+                tarifaPreferencial <- CalcularTarifaPreferencial(diaAsis, fechaAsis, mesAsis, horario)
+            HASTA QUE (horario = 1 O horario = 2)
+            IMPRIMIRInfoCliente(archivoJava, fechaAsis, diaAsis, mesAsis, tarifaNormal, tarifaPreferencial)
+            PREGUNTAR cantidadNormal
+            matrizEstadistica[ConvertirEntero(fechaAsis)][1] <- matrizEstadistica[ConvertirEntero(fechaAsis)][1] + cantidadNormal
+            PREGUNTAR cantidadPrefer
+            matrizEstadistica[ConvertirEntero(fechaAsis)][2] <- matrizEstadistica[ConvertirEntero(fechaAsis)][2] + cantidadPrefer
+            totalCantidad <- cantidadNormal + cantidadPrefer
+            totalNormal <- tarifaNormal * cantidadNormal
+            matrizEstadistica[ConvertirEntero(fechaAsis)][3] <- matrizEstadistica[ConvertirEntero(fechaAsis)][3] + totalNormal
+            totalPreferencial <- tarifaPreferencial * cantidadPrefer
+            matrizEstadistica[ConvertirEntero(fechaAsis)][4] <- matrizEstadistica[ConvertirEntero(fechaAsis)][4] + totalPreferencial
+            totalAPagar <- totalNormal + totalPreferencial
+            matrizEstadistica[ConvertirEntero(fechaAsis)][5] <- matrizEstadistica[ConvertirEntero(fechaAsis)][5] + totalAPagar
+            numeroSorteo <- GenerarAleatorio(1, 15)
+            SI (totalCantidad > 5) ENTONCES
+                ...
+            FIN SI
+            REPETIR
+                PREGUNTAR opcionMetPago
+                SEGUN opcionMetPago HACER
+                    CASO 1:
+                        ...
+                    CASO 2:
+                        ...
+                    DE OTRO MODO:
+                        IMPRIMIR("Opción incorrecta, vuelva a intentarlo.")
+                FIN SEGUN
+            HASTA QUE (opcionMetPago = 1 O opcionMetPago = 2)
+            PREGUNTAR respuesta
+            numCli <- numCli + 1
+        HASTA QUE (respuesta = "No")
+        generarEstadistica(diaElegido, entradasPorDia, acumuladorTotales, acumEntrNormals)
+
+    FIN PROCEDIMIENTO
+
+FIN ALGORITMO

@@ -1,33 +1,438 @@
 1. Algoritmo GestionBoletosFeriaInterLoja
-2. 	Inicio
-3. 	Metodo principal()
-3. 	Definicion
-		nombre, tarifaNorm, tarifaMedi, tarifaEst Como Cadena [A-Z, ,a-z]
-		edad Como Entero [1,n]
-4.  << "Cual es su nombre: "
-5.  >> nombre
-6.  << "Cual es su edad: "
-7.  >> edad
-8.  << "Su tarifa es: ", tipoDeTarifa(edad)
-9.	
+2.    Inicio
+3.    Método principal()
+4.        Definición
+5.            respuesta, nombreCliente, diaAsis, fechaAsis, mesAsis, resp, participaSorteo Como Cadena [A-Z, ,a-z]
+6.            filas = 18, columnas = 9, horario, cantidadNormal, cantidadPrefer, numCli = 0, totalCantidad, opcionMetPago, contrasena, numeroSorteo Como Entero[1,n]
+7.            tarifaNormal = 0, tarifaPreferencial = 0, totalNormal, totalPreferencial, totalAPagar, acumuladorTotales = 0, acumEntrNormals = 0, acumEntrPref = 0 Como Real [0.0,n]
+8.            Dimension archivoJava[filas][columnas] Como Cadena
+9.            Dimension entradasPorDia[filas][2] Como Entero
+10.            Dimension matrizEstadistica[18][6] Como Real
+11.        Hacer{
+12.            <<("o---------> NOTA <-----");
+13.            <<("El dia con funciones ya sea especiales, nacionales o internacionales el precio del boleto aumenta a partir de las 18:00 horas hasta las 02:00 horas")
+14.            <<("___________________________________________FERIA INTERNACIONAL DE LOJA 2024______________________________________________")
+15.            <<("--------------------------------+---------------+-------+---------------+-----------------------+-------+-------+-------+-------+")
+16.            <<("ARTISTAS            |    DIAS   |    NUM   |     MES    |     FUNCIONES     |   NORMAL2   |   PREFER2   |    NORMAL1  |  PREFER1|");
+17.            <<("--------------------------------+---------------+-------+---------------+-----------------------+-------+-------+-------+-------+")
+18.            Procedimiento imprimirArchivo(Cadena archivoJava[][], Entero filas, Entero columnas)
+19.            <<("-------------------------------+---------------+-------+---------------+-----------------------+-------+-------+-------+-------+")
+20.            <<("Ingrese el nombre del cliente: ")
+21.            >> nombreCliente
+22.            <<("Hola " + nombreCliente + " a continuacion se le <<a la informacion de su solicitud =D")
+23.            <<("Ingrese el nombre del dia del cual desea asistir (Ejemplo: Sabado): ")
+24.            >> diaAsis
+25.            <<("Ingrese el dia del cual desea asistir (Ejemplo: 7): ")
+26.            >> fechaAsis
+27.            <<("Ingrese el mes del cual desea asistir (Ejemplo: Septiembre): ")
+28.            >> mesAsis
+29.            archivoJava(archivoJava)
+30.            Hacer{
+31.                <<("------------------------------------------------------------------------------------------------------------------")
+32.                <<("Ingrese el horario el cual desea asistir (ingrese el numeral del horario a escoger): \n 1. Horario Normal (Empieza a partir de las 02:01 am hasta las 17:59 pm) \n 2. Horario Nocturno  (Empieza a partir de las 18:00 pm hasta las 02:00 am)")
+33.                >> horario
+34.                tarifaNormal = tarifaaNormal(diaAsis, fechaAsis, mesAsis, horario)
+35.                tarifaPreferencial = tarifaPreferencial(diaAsis, fechaAsis, mesAsis, horario)
+36.            }Mientras(horario <> 1 && horario <>2)
+37.            << "---------------------------------------------------------------"
+38.            imprimirInfoClien(archivoJava, fechaAsis, diaAsis, mesAsis, tarifaNormal, tarifaPreferencial);
+39.            << "---------------------------------------------------------------"
+40.            << "¿Cuántas entradas de tarifa normal desea comprar?: "
+41.            >> cantidadNormal
+42.            matrizEstadistica[Convertir_Entero(fechaAsis)][1] += cantidadNormal
+43.            << "¿Cuántas entradas de tarifa preferencial desea comprar?: "
+44.            >> cantidadPrefer
+45.            matrizEstadistica[Convertir_Entero(fechaAsis)][2] += cantidadPrefer
+46.            totalCantidad = (cantidadNormal + cantidadPrefer)
+47.            totalNormal = (tarifaNormal * cantidadNormal)
+48.            matrizEstadistica[Convertir_Entero(fechaAsis)][3] += totalNormal
+49.            totalPreferencial = (tarifaPreferencial * cantidadPrefer)
+50.            matrizEstadistica[Convertir_Entero(fechaAsis)][4] += totalPreferencial
+51.            totalAPagar = (totalNormal + totalPreferencial)
+52.            matrizEstadistica[Convertir_Entero(fechaAsis)][5] += totalAPagar
+53.            numeroSorteo = Aleatorio(1,15)
+54.            Si(totalCantidad > 5)
+55.                <<"Supera la compra de 5 boletos. Desea participar en un sorteo para ganar un boleto a una entrada normal"
+56.                >> participaSorteo
+57.                Si (participaSorteo == "Si")
+58.                    << ("Su numero de sorteo es: "+ numeroSorteo)
+59.                    Si(numeroSorteo == 3 || numeroSorteo == 6 || numeroSorteo == 9)
+60.                        <<("----------> Felicitaciones, ha ganado un boleto gratis para el ultimo dia de la feria!")
+61.                    Sino
+62.                        <<("----------> Lo sentimos, no ha ganado en esta ocasion. Suerte para la proxima!")
+63.                        <<("El numero del sorteo ganador es 3, 6 o 9")
+64.                    FinSi
+65.                FinSi
+66.            FinSi
+67.            Hacer {
+68.                << "METODO DE PAGO <-----------------------"
+69.                << "1. Efectivo"
+70.                << "2. Tarjeta SITU"
+71.                << "Ingrese el método de pago que utilizó: "
+72.                opcionMetPago = tecla.nextInt()
+73.
+74.                Según opcionMetPago Hacer:
+75.                    Caso 1:
+76.                        << "====================================================================="
+77.                        << "---------FACTURA FINAL------------------"
+78.                        << "Método de Pago: EFECTIVO"
+79.                        << "Cliente: " + nombreCliente
+80.                        << "Compró entradas para el día " + diaAsis + " " + fechaAsis + " " + mesAsis
+81.                        << "Comprando " + cantidadNormal + " entradas normales ($" + tarifaNormal + ") y dándoles un costo de $" + totalNormal
+82.                        << "Comprando " + cantidadPrefer + " entradas preferenciales ($" + tarifaPreferencial + ") y dándoles un costo de $" + totalPreferencial
+83.                        << "El costo final de las entradas es de $" + totalAPagar
+84.                        << "----------------------------------------------------------"
+85.                    Romper
+86.                    Caso 2:
+87.                        << "Introduzca el ID de su tarjeta SITU: "
+88.                        idTarjeta = tecla.next()
+89.                        << "La transacción fue realizada con éxito!"
+90.                        << "====================================================================="
+91.                        << "---------FACTURA FINAL------------------"
+92.                        << "Método de Pago: Tarjeta SITU"
+93.                        << "ID: " + idTarjeta
+94.                        << "Cliente: " + nombreCliente
+95.                        << "Compró entradas para el día " + diaAsis + " " + fechaAsis + " " + mesAsis
+96.                        << "Comprando " + cantidadNormal + " entradas normales ($" + tarifaNormal + ") y dándoles un costo de $" + totalNormal
+97.                        << "Comprando " + cantidadPrefer + " entradas preferenciales ($" + tarifaPreferencial + ") y dándoles un costo de $" + totalPreferencial
+98.                        << "El costo final de las entradas es de $" + totalAPagar
+99.                        << "----------------------------------------------------------"
+100.                    Romper
+101.                    De lo contrario:
+102.                        << "Opción incorrecta, vuelva a intentarlo."
+103.                    Romper
+104.                Fin Según
+105.            }Mientras (opcionMetPago <> 1 && opcionMetPago <> 2)
+106.            <<"Desea ingresar la compra de un nuevo cliente? (Si/No): "
+107.            >> respuesta
+108.                generarEstadistica(diaElegido , entradasPorDia , acumuladorTotales , acumEntrNormals)
+109.                numCli = numCli + 1
+110.            Si respuesta es "No" entonces
+111.                Hacer{
+112.                    Preguntar "Que tipo de estadistica desea ver? (Si/No): "
+113.                    << "1. Estadisticas generales"
+114.                    << "2. Estadistica detallada (Personal Autorizado)"
+115.                    Leer opcEstadistica
+116.
+117.                    Según opcEstadistica Hacer:
+118.                        Caso 1:
+119.                            << "---------------------------------------------------ESTADISTICA FINAL--------------------------------------------------------------------------------"
+120.                            << "\n\tEstadísticas Generales"
+121.                            << "Numero de Clientes que realizaron una compra: " + numCli
+122.                            << "El costo total de entradas normales adquiridas en todo el evento es de: " + acumEntrNormals
+123.                            << "El costo total de entradas preferenciales adquiridas en todo el evento es de: " + acumEntrPref
+124.                            << "El ingreso que se obtuvo de todo el evento de la Feria Internacional de Loja 2024 es de: $" + acumuladorTotales
+125.                            << "\n\tEntradas por día:"
+126.                            << ("El dia que se ingreso para asistir: "+ diaElegido)
+127.                            Romper
+128.                        Caso 2:
+129.                            Hacer
+130.                                Hacer{
+131.                                    << "Ingrese la contrasena:"
+132.                                    Leer contrasena
+133.                                }Mientras (contrasena <> 2000)
+134.                                Si (contrasena == 2000) entonces
+135.                                    << "\n\tEstadística Detallada"
+136.                                    abrirArchivo("Estadisticas_Dia"+diaElegido+".csv")
+137.                                FinSi
+138.                            Fin
+139.                            Romper
+140.                    Fin Según
+141.
+142.                    << "======================================="
+143.                    << "Desea probar las otras opciones? (Si/No)"
+144.                    Leer resp
+145.                }Mientras (resp == "Si")
+146.            Fin Si
+147.        }Mientras(respuesta == "Si")		
+148.    Fin Método Principal
 
-   FinMetodoPrincipal
+1	Procedimiento archivoJava(Cadena archivoJava[][]):x
+2		datosCSV = [ ["MELENDI", "Sabado", "31", "Agosto", "Funcion Especial", "10.00", "5.00", "1.50", "1.50"],
+					    ["GERARDO MORAN", "Domingo", "1", "Septiembre", "Funcion Nacional", "5.00", "2.50", "1.50", "1.50"],
+					    ["---------------------------", "Lunes ", "2", "Septiembre", "Sin Funcion", "1.50", "0.75", "1.50", "1.50"],
+					    ["---------------------------", "Martes", "3", "Septiembre", "Sin Funcion", "1.50", "0.75", "1.50", "1.50"],
+					    ["---------------------------", "Miercoles", "4", "Septiembre", "Sin Funcion", "1.50", "0.75", "1.50", "1.50"],
+					    ["---------------------------", "Jueves", "5", "Septiembre", "Sin Funcion", "1.50", "0.75", "1.50", "1.50"],
+					    ["JAYAC", "Viernes", "6", "Septiembre", "Funcion Nacional", "5.00", "2.50", "1.50", "1.50"],
+					    ["---------------------------", "Sabado", "7", "Septiembre", "Funcion Nacional", "5.00", "2.50", "1.50", "1.50"],
+					    ["---------------------------", "Domingo", "8", "Septiembre", "Sin Funcion", "1.50", "0.75", "1.50", "1.50"],
+					    ["---------------------------", "Lunes ", "9", "Septiembre", "Sin Funcion", "1.50", "0.75", "1.50", "1.50"],
+					    ["---------------------------", "Martes", "10", "Septiembre", "Sin Funcion", "1.50", "0.75", "1.50", "1.50"],
+					    ["---------------------------", "Miercoles", "11", "Septiembre", "Sin Funcion", "1.50", "0.75", "1.50", "1.50"],
+					    ["---------------------------", "Jueves", "12", "Septiembre", "Sin Funcion", "1.50", "0.75", "1.50", "1.50"],
+					    ["ALEJANDRO LERNER", "Viernes", "13", "Septiembre", "Funcion Nacional", "5.00", "2.50", "1.50", "1.50"],
+					    ["CHYNO MIRANDA", "Sabado", "14", "Septiembre", "Funcion Internacional", "7.00", "3.50", "1.50", "1.50"],
+					    ["DON MEDARDO Y SUS PLAYERS", "Domingo", "15", "Septiembre", "Funcion Nacional", "5.00", "2.50", "1.50", "1.50"],
+					    ["VALLENATOS 'BINOMIO DE ORO'", "Lunes ", "16", "Septiembre", "Funcion Internacional", "7.00", "3.50", "1.50", "1.50"],
+					    ["LOS PRISIONEROS", "Martes", "17", "Septiembre", "Funcion Especial", "10.00", "5.00", "1.50", "1.50"]
+					  ]
+3		Para cada fila en datosCSV hacer
+4         archivoJava[i][0] = fila[0]
+5         archivoJava[i][1] = fila[1]
+6         archivoJava[i][2] = fila[2]
+7         archivoJava[i][3] = fila[3]
+8         archivoJava[i][4] = fila[4]
+9         archivoJava[i][5] = fila[5]
+10        archivoJava[i][6] = fila[6]
+11        archivoJava[i][7] = fila[7]
+12        archivoJava[i][8] = fila[8]
+13       i++  
+14     FinPara
+15	FinProcedimiento
 
-1. Funcion tipoDeTarifa(edad i(0,n)):x
-2.	Definir
-		tipoTari Como Cadena [A-Z, ,a-z]
-3.	Si (edad <10 )
-4.		tipoTari = "No paga"
-5.	Sino 
-6.		Si (edad <18)
-7.		tipoTari = "tarifaEst"
-8.		Sino 
-9.			Si (edad < 60)
-10.				tipoTari = "tarifaNorm"
-11.			Sino
-12.				tipoTari = "tarifaMedi"
-13.			FinSi
-14.		FinSi
-15.	FinSi
-16.	Devolver tipoTari	
-17.FinFuncion
+1. Procedimiento imprimirArchivo(Cadena archivoJava[][], Entero filas, Entero columnas):
+2.     Para i desde 0 hasta filas - 1 hacer:
+3.         Para j desde 0 hasta columnas - 1 hacer:
+4.             << archivoJava[i][j] + " \t|"
+5.         FinPara
+6.         << " "
+7.     FinPara
+8. FinProcedimiento
+
+
+1   Funcion tarifaNormal(Cadena diaAsis,Cadena fechaAsis,Cadena mesAsis, Entero horario):d
+2    Definir tarifaNormal Como Real
+3    Si (("Sabado" == diaAsis) && ("31" == fechaAsis) && ("Agosto" == mesAsis)):
+4        Si (horario == 2)
+5            tarifaNormal = 10.00
+6        Sino:
+7            tarifaNormal = 1.50
+8    Sino 
+9    	Si (("Martes" == diaAsis) && ("17" == fechaAsis) && ("Septiembre" == mesAsis)):
+10        Si (horario == 2)
+11            tarifaNormal = 10.00
+12        Sino:
+13            tarifaNormal = 1.50
+14    	Sino 
+15    		Si (("Sabado" == diaAsis) && ("14" == fechaAsis) && ("Septiembre" == mesAsis)):
+16        		Si (horario == 2)
+17          	  	tarifaNormal = 7.00
+18        		Sino
+19       	     	tarifaNormal = 1.50
+20    		Sino 
+21    			Si (("Lunes" == diaAsis) && ("16" == fechaAsis) && ("Septiembre" == mesAsis)):
+22        			Si (horario == 2)
+23 	           		tarifaNormal = 7.00
+24        			Sino
+25      	      		tarifaNormal = 1.50
+26    			Sino 
+27    				Si (("Domingo" == diaAsis) && ("1" == fechaAsis) && ("Septiembre" == mesAsis)):
+28        				Si (horario == 2)
+29             			tarifaNormal = 5.00
+30        				Sino
+31             			tarifaNormal = 1.50
+32    				Sino 
+33    					Si (("Viernes" == diaAsis) && ("6" == fechaAsis) && ("Septiembre" == mesAsis)):
+34				        Si (horario == 2)
+35				            tarifaNormal = 5.00
+36				        Sino
+37				            tarifaNormal = 1.50
+38   					Sino 
+39   						Si (("Sabado" == diaAsis) && ("7" == fechaAsis) && ("Septiembre" == mesAsis)):
+40					        Si (horario == 2)
+41					            tarifaNormal = 5.00
+42					        Sino
+43					            tarifaNormal = 1.50
+44   						Sino 
+45   							Si (("Viernes" == diaAsis) && ("13" == fechaAsis) && ("Septiembre" == mesAsis)):
+46						        Si (horario == 2)
+47						            tarifaNormal = 5.00
+48						        Sino
+49						            tarifaNormal = 1.50
+50   							Sino 
+51   								Si (("Domingo" == diaAsis) && ("15" == fechaAsis) && ("Septiembre" == mesAsis)):
+52							        Si (horario == 2)
+53							            tarifaNormal = 5.00
+54							        Sino
+55							            tarifaNormal = 1.50
+56   								Sino
+57        								tarifaNormal = 1.50
+58        							FinSi
+59        						FinSi
+60        					FinSi
+61        				FinSi
+62        			FinSi
+63        		FinSi
+64        	FinSi
+65      FinSi
+66    FinSi							
+67    Devolver tarifaNormal
+68	FinFuncion
+
+1    Funcion tarifaPreferencial(Cadena diaAsis,Cadena fechaAsis,Cadena mesAsis, Entero horario):d
+2        Definir tarifaPreferencial Como Real
+3        Si (("Sabado" == diaAsis) && ("31" == fechaAsis) && ("Agosto" == mesAsis)):
+4            Si (horario == 2)
+5                tarifaPreferencial = 5.00
+6            Sino
+7                tarifaPreferencial = 0.75
+8        Sino 
+9            Si (("Martes" == diaAsis) && ("17" == fechaAsis) && ("Septiembre" == mesAsis)):
+10                Si (horario == 2)
+11                    tarifaPreferencial = 5.00
+12                Sino
+13                    tarifaPreferencial = 0.75
+14            Sino 
+15                Si (("Sabado" == diaAsis) && ("14" == fechaAsis) && ("Septiembre" == mesAsis)):
+16                    Si (horario == 2)
+17                        tarifaPreferencial = 3.50
+18                    Sino
+19                        tarifaPreferencial = 0.75
+20                Sino 
+21                    Si (("Lunes" == diaAsis) && ("16" == fechaAsis) && ("Septiembre" == mesAsis)):
+22                        Si (horario == 2)
+23                            tarifaPreferencial = 3.50
+24                        Sino
+25                            tarifaPreferencial = 0.75
+26                    Sino 
+27                        Si (("Domingo" == diaAsis) && ("1" == fechaAsis) && ("Septiembre" == mesAsis)):
+28                            Si (horario == 2)
+29                                tarifaPreferencial = 2.50
+30                            Sino
+31                                tarifaPreferencial = 0.75
+32                        Sino 
+33                            Si (("Viernes" == diaAsis) && ("6" == fechaAsis) && ("Septiembre" == mesAsis)):
+34                                Si (horario == 2)
+35                                    tarifaPreferencial = 2.50
+36                                Sino
+37                                    tarifaPreferencial = 0.75
+38                            Sino 
+39                                Si (("Sabado" == diaAsis) && ("7" == fechaAsis) && ("Septiembre" == mesAsis)):
+40                                    Si (horario == 2)
+41                                        tarifaPreferencial = 2.50
+42                                    Sino
+43                                        tarifaPreferencial = 0.75
+44                                Sino 
+45                                    Si (("Viernes" == diaAsis) && ("13" == fechaAsis) && ("Septiembre" == mesAsis)):
+46                                        Si (horario == 2)
+47                                            tarifaPreferencial = 2.50
+48                                        Sino
+49                                            tarifaPreferencial = 0.75
+50                                Sino 
+51                                    Si (("Domingo" == diaAsis) && ("15" == fechaAsis) && ("Septiembre" == mesAsis)):
+52                                        Si (horario == 2)
+53                                            tarifaPreferencial = 2.50
+54                                        Sino
+55                                            tarifaPreferencial = 0.75
+56                                    Sino
+57                                        tarifaPreferencial = 0.75
+58                                FinSi
+59                            FinSi
+60                        FinSi
+61                    FinSi
+62                FinSi
+63            FinSi
+64        FinSi							
+65        Devolver tarifaPreferencial
+66    FinFuncion
+
+1    Funcion tarifaPreferencial(Cadena diaAsis,Cadena fechaAsis,Cadena mesAsis, Entero horario):d
+2        Definir tarifaPreferencial Como Real
+3        Si (("Sabado" == diaAsis) && ("31" == fechaAsis) && ("Agosto" == mesAsis)):
+4            Si (horario == 2)
+5                tarifaPreferencial = 5.00
+6            Sino
+7                tarifaPreferencial = 0.75
+8        Sino 
+9            Si (("Martes" == diaAsis) && ("17" == fechaAsis) && ("Septiembre" == mesAsis)):
+10                Si (horario == 2)
+11                    tarifaPreferencial = 5.00
+12                Sino
+13                    tarifaPreferencial = 0.75
+14            Sino 
+15                Si (("Sabado" == diaAsis) && ("14" == fechaAsis) && ("Septiembre" == mesAsis)):
+16                    Si (horario == 2)
+17                        tarifaPreferencial = 3.50
+18                    Sino
+19                        tarifaPreferencial = 0.75
+20                Sino 
+21                    Si (("Lunes" == diaAsis) && ("16" == fechaAsis) && ("Septiembre" == mesAsis)):
+22                        Si (horario == 2)
+23                            tarifaPreferencial = 3.50
+24                        Sino
+25                            tarifaPreferencial = 0.75
+26                    Sino 
+27                        Si (("Domingo" == diaAsis) && ("1" == fechaAsis) && ("Septiembre" == mesAsis)):
+28                            Si (horario == 2)
+29                                tarifaPreferencial = 2.50
+30                            Sino
+31                                tarifaPreferencial = 0.75
+32                        Sino 
+33                            Si (("Viernes" == diaAsis) && ("6" == fechaAsis) && ("Septiembre" == mesAsis)):
+34                                Si (horario == 2)
+35                                    tarifaPreferencial = 2.50
+36                                Sino
+37                                    tarifaPreferencial = 0.75
+38                            Sino 
+39                                Si (("Sabado" == diaAsis) && ("7" == fechaAsis) && ("Septiembre" == mesAsis)):
+40                                    Si (horario == 2)
+41                                        tarifaPreferencial = 2.50
+42                                    Sino
+43                                        tarifaPreferencial = 0.75
+44                                Sino 
+45                                    Si (("Viernes" == diaAsis) && ("13" == fechaAsis) && ("Septiembre" == mesAsis)):
+46                                        Si (horario == 2)
+47                                            tarifaPreferencial = 2.50
+48                                        Sino
+49                                            tarifaPreferencial = 0.75
+50                                Sino 
+51                                    Si (("Domingo" == diaAsis) && ("15" == fechaAsis) && ("Septiembre" == mesAsis)):
+52                                        Si (horario == 2)
+53                                            tarifaPreferencial = 2.50
+54                                        Sino
+55                                            tarifaPreferencial = 0.75
+56                                    Sino
+57                                        tarifaPreferencial = 0.75
+58                                FinSi
+59                            FinSi
+60                        FinSi
+61                    FinSi
+62                FinSi
+63            FinSi
+64        FinSi							
+65        Devolver tarifaPreferencial
+66    FinFuncion
+
+
+1    Procedimiento imprimirInfoClien(Cadena archivoJava[][], Cadena fechaAsis, Cadena diaAsis, Cadena mesAsis, Real tarifaNormal, Real tarifaPreferencial)
+2        Para(i=0; i< archivoJava.longitud; i=i+1)
+3            Si(fechaAsis == archivoJava[i][2])
+4                << archivoJava[i][4]
+5                << ("---> Ese día es " + diaAsis + " " + fechaAsis + " de " + mesAsis)
+6                << ("---> El valor del boleto normal por persona es de: " + tarifaNormal)
+7                << ("---> El valor del boleto preferencial por persona es de: " + tarifaPreferencial)
+8                Romper;
+9            FinSi
+10       FinPara
+11   FinProcedimiento
+
+1. Procedimiento generarEstadistica(dia, matriz, acumuladorTotales, acumEntrNormals)
+2.    Intentar
+3.        Definir nombreArchivo como "Estadisticas_Dia" concatenado con dia concatenado con ".csv"
+4.        Definir escritura como un nuevo Formatter con los parámetros (nombreArchivo, "UTF-8", Locale.US)
+5.        Escribir en escritura el texto "~~~~~~~~~ Estadisticas ~~~~~~~~~~" seguido de un salto de línea
+6.        Escribir en escritura "Dia Elegido: " concatenado con dia + 1 seguido de un salto de línea
+7.        Escribir en escritura "Entradas Tarifa Normal Acumuladas: " concatenado con acumEntrNormals y sin decimales, seguido de un salto de línea
+8.        Escribir en escritura "Entradas Tarifa Preferencial Acumuladas: " concatenado con (matriz[dia][1] - acumEntrNormals) y sin decimales, seguido de un salto de línea
+9.        Escribir en escritura "Numero Total Entradas: " concatenado con matriz[dia][1], seguido de un salto de línea
+10.       Escribir en escritura "Ingresos Totales: " concatenado con acumuladorTotales y con dos decimales, seguido de un salto de línea
+11.       Cerrar escritura
+12.   Atrapar cualquier excepción y almacenarla en e
+13.   Si hay una excepción, imprimir el mensaje de la excepción
+14.   FinProcedimiento
+
+
+1. Procedimiento abrirArchivo(rutaArchivo)
+2.    Definir archivoCSV como un nuevo objeto File con rutaArchivo como parámetro
+3.    Si Desktop.isDesktopSupported() devuelve verdadero entonces
+4.        Definir desktop como Desktop.getDesktop()
+5.        Si archivoCSV.exists() devuelve verdadero entonces
+6.            Abrir archivoCSV con el programa predeterminado
+7.        Sino
+8.            Mostrar "El archivo CSV no existe en la ruta especificada."
+9.        FinSi
+10.    Sino
+11.        Mostrar "La apertura de archivos no es compatible en este sistema."
+12.    FinSi
+13. FinProcedimiento
